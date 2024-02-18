@@ -50,7 +50,7 @@ ggplot(df_long_nona, aes(x = Distance, y = Area)) +
        x = "Distance from Colony Main Entrance (m)",
        y = "Leaf Surface Area (cm^2)") +
   theme(panel.background = element_rect(fill = "white"),
-        panel.grid = element_line(color = "gray95"),
+        panel.grid = element_line(color = "white"),
         panel.grid.major.x = element_line(color = "white"))+
   scale_y_continuous(breaks = seq(0, max(df_long_nona$Area), by = 0.5))
 ```
@@ -71,11 +71,12 @@ ggplot(summary_data, aes(x = Distance, y = Mean, fill = factor(Distance))) +
        y = "Leaf Surface Area (cm^2)") +
   theme(legend.position = "none",
         panel.background = element_rect(fill = "white"),
-        panel.grid = element_line(color = "gray95"),
+        panel.grid = element_line(color = "white"),
         panel.grid.major.x = element_line(color = "white"))
 ```
 
 ## Leaf area statistics
+### One-way ANOVA
 ```{R, echo=FALSE, include=FALSE}
 
 na.omit(df_long_nona)
@@ -84,7 +85,10 @@ na.omit(df_long_nona)
 ```{R}
 model <- aov(Area ~ Distance, data = df_long_nona)
 summary(model)
+```
 
+### Tukey Test
+```{R}
 tukey_results <- HSD.test(model, "Distance")
 print(tukey_results)
 ```
@@ -125,7 +129,7 @@ quadrat_data <- data.frame(
   Area = area_vector,
   Mass = mass_vector,
   Count = count_vector,
-  MpreL = mass_per_leaf,
+  MperL = mass_per_leaf,
   MperA = mass_per_area
 )
 #change row headers
@@ -140,6 +144,19 @@ print(quadrat_data, row.names = FALSE)
 x <- 0:23
 y <- mass_vector[-(1:2)]
 z <- count_vector[-(1:2)]
+ar <- area_vector[-(1:2)]
+ml <- mass_per_leaf[-(1:2)]
+ma <- mass_per_area[-(1:2)]
+
+# Create the data frame
+df_3 <- data.frame(
+  x = x,
+  y = y,
+  z = z,
+  ar = ar,
+  ml = ml,
+  ma = ma
+)
 
 plot(x, y, main = "Leaf Mass vs. Distance from Main Colony Entrance", xlab = "Distance (m)", ylab = "Leaf Mass (g)", col = "blue", pch = 16)
 
@@ -219,8 +236,85 @@ axis(4, col = "black", col.axis = "black", las = 1)  # Set color for Z axis
 legend("topright", legend = c("Mass (g)", "Count"), col = c("blue", "firebrick2"), pch = 16)
 ```
 
+### Plot Area per Leaf vs. Distance
+```{R}
+df_4 <- data.frame(
+  x = distance_vector,
+  ar = area_vector
+)
+df_4$x <- as.numeric(as.character(df_4$x))
 
+# Fit a linear regression model
+model <- lm(ar ~ x, data = df_4)
 
+# Create a scatter plot
+plot(df_4$x, df_4$ar, main = "Area per Leaf vs. Distance from Main Colony Entrance", xlab = "Distance (m)", ylab = "Area per Leaf", col = "darkgreen", pch = 16)
 
+# Extract coefficients
+coefficients <- coef(model)
+
+# Add the equation of the line
+equation <- paste("y =", round(coefficients[1], 2), "+", round(coefficients[2], 2), "* x")
+text(min(df_4$x), max(df_4$ar), equation, pos = 4, col = "darkgreen")
+
+# Calculate R-squared
+r_squared <- summary(model)$r.squared
+
+# Add R-squared value to the plot
+r_squared_text <- paste("R-squared =", round(r_squared, 3))
+text(max(df_4$x), max(df_4$ar) - 0.1 * diff(range(df_4$ar)), r_squared_text, pos = 4, col = "black")
+```
+
+### Plot Mass per Leaf vs. Distance
+```{R}
+# Fit a linear regression model
+model <- lm(ml ~ x, data = df_3)
+
+# Create a scatter plot
+plot(df_3$x, df_3$ml, main = "Mass per Leaf vs. Distance from Main Colony Entrance", xlab = "Distance (m)", ylab = "Mass per Leaf", col = "purple", pch = 16)
+
+# Add the line of best fit to the plot
+abline(model, col = "purple")
+
+# Extract coefficients
+coefficients <- coef(model)
+
+# Add the equation of the line
+equation <- paste("ml =", round(coefficients[1], 2), "+", round(coefficients[2], 2), "* x")
+text(min(df_3$x), max(df_3$ml), equation, pos = 4, col = "purple")
+
+# Calculate R-squared
+r_squared <- summary(model)$r.squared
+
+# Add R-squared value to the plot
+r_squared_text <- paste("R-squared =", round(r_squared, 3))
+text(min(df_3$x), max(df_3$ml) - 0.1 * diff(range(df_3$ml)), r_squared_text, pos = 4, col = "black")
+```
+
+### Plot Mass per Area vs. Distance
+```{R}
+# Fit a linear regression model
+model <- lm(ma ~ x, data = df_3)
+
+# Create a scatter plot
+plot(df_3$x, df_3$ma, main = "Mass per Area vs. Distance from Main Colony Entrance", xlab = "Distance (m)", ylab = "Mass per Area", col = "orange", pch = 16)
+
+# Add the line of best fit to the plot
+abline(model, col = "orange")
+
+# Extract coefficients
+coefficients <- coef(model)
+
+# Add the equation of the line
+equation <- paste("y =", round(coefficients[1], 2), "+", round(coefficients[2], 2), "* x")
+text(min(df_3$x), max(df_3$ma), equation, pos = 4, col = "orange")
+
+# Calculate R-squared
+r_squared <- summary(model)$r.squared
+
+# Add R-squared value to the plot
+r_squared_text <- paste("R-squared =", round(r_squared, 3))
+text(min(df_3$x), max(df_3$ma) - 0.1 * diff(range(df_3$ma)), r_squared_text, pos = 4, col = "black")
+```
 
 
