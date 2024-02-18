@@ -3,6 +3,8 @@ title: "Leaf_Analysis"
 format: html
 editor: source
 ---
+## Context
+From January 1-15, 2024, I visited Costa Rica as a class trip. I conducted an observational study on foraging behavior of leafcutter ants.  My goal is to assess qualities of leaves that are rejected far from the colony, vs. leaves that are carried all the way to the colony entrance and rejected at the doorstep.
 
 ## Packages
 * tidyverse
@@ -70,9 +72,11 @@ distance_vector <- summary_data$Distance
 
 #Extract mass and count from excel
 mass_count_excel_file_path <- "~/Desktop/Spring 2024/Field Ecology Lab/Leafcutters Jan 2024/Excel Sheets/Area Data.xlsx"
-
+```
+```{R, include=FALSE}
 df_2 <- read_excel(mass_count_excel_file_path)
-
+```
+```{R}
 leaf_count_row <- df_2[2, ]
 count_vector <- as.vector(unlist(leaf_count_row))
 count_vector <- count_vector[count_vector != "count"]
@@ -88,7 +92,7 @@ mass_vector <- as.numeric(mass_vector)
 
 mass_per_leaf <- mass_vector / count_vector
 
-mass_per_area <- mass_vector / area_vector
+mass_per_area <- mass_vector / area_vector / count_vector  
 
 quadrat_data <- data.frame(
   Distance = distance_vector,
@@ -98,16 +102,99 @@ quadrat_data <- data.frame(
   MpreL = mass_per_leaf,
   MperA = mass_per_area
 )
-print(quadrat_data)
+#change row headers
+colnames(quadrat_data) <-
+c("Distance (m)", "Avg Area (cm²)", "Mass (g)", "Count","g/leaf", "g/cm²")
+print(quadrat_data, row.names = FALSE)
 ```
 
-### Plot Mass and Count vs. Distance
+### Plot Leaf Mass vs. Distance
 ```{R}
 #establish data
-x <- distance_vector
-y <- mass_vector
-z <- count_vector
+x <- 0:23
+y <- mass_vector[-(1:2)]
+z <- count_vector[-(1:2)]
 
-# Create a scatter plot with dots
-plot(x, y, type = "p", main = "Scatter Plot Example", xlab = "X-axis", ylab = "Y-axis", pch = 16, col = "blue")
+plot(x, y, main = "Leaf Mass vs. Distance from Main Colony Entrance", xlab = "Distance (m)", ylab = "Leaf Mass (g)", col = "blue", pch = 16)
+
+#Add an exponential line of best fit
+fit <- lm(log(y) ~ x)
+
+# Generate predicted values for the exponential fit
+x_pred <- seq(min(x), max(x), length.out = 100)
+y_pred <- exp(predict(fit, newdata = data.frame(x = x_pred)))
+
+# Add the exponential line to the plot
+lines(x_pred, y_pred, col = "blue", type = "l")
+
+#add the equation of best fit
+# Extract coefficients and transform back from log scale
+a <- exp(coef(fit)[1])
+b <- coef(fit)[2]
+
+# Print the equation on the plot
+eq <- sprintf("y = %.2f * exp(%.2fx)", a, b)
+text(3, max(y), eq, pos = 4, col = "black", cex = 0.8)
 ```
+
+### Plot Leaf Count vs. Distance
+```{R}
+plot(x, z, main = "Leaf Count vs. Distance from Main Colony Entrance", xlab = "Distance (m)", ylab = "Leaf Count", col = "firebrick2", pch = 16)
+fit <- lm(log(z) ~ x)
+x_pred <- seq(min(x), max(x), length.out = 100)
+z_pred <- exp(predict(fit, newdata = data.frame(x = x_pred)))
+lines(x_pred, z_pred, col = "firebrick2", type = "l")
+a <- exp(coef(fit)[1])
+b <- coef(fit)[2]
+eq <- sprintf("z = %.2f * exp(%.2fx)", a, b)
+text(3, max(z), eq, pos = 4, col = "black", cex = 0.8)
+```
+
+### Plot both Leaf Count and Mass vs. Distance on the same graph
+
+```{R}
+# Set up the first plotting region
+# Set up the plotting region
+par(mar = c(5, 4, 4, 2) + 0.1, oma = c(0, 0, 0, 1))
+plot(x, y, type = "p", col = "blue", pch = 16, ylab = "", xlab = "Distance (m)", axes = TRUE)
+
+# Add a label on the left side for Y
+mtext("Mass (g)", side = 2, line = 2, col = "blue", cex = 1.2)  # Adjust line and cex as needed
+
+#Add an exponential line of best fit
+fit <- lm(log(y) ~ x)
+
+# Generate predicted values for the exponential fit
+x_pred <- seq(min(x), max(x), length.out = 100)
+y_pred <- exp(predict(fit, newdata = data.frame(x = x_pred)))
+
+# Add the exponential line to the plot
+lines(x_pred, y_pred, col = "blue", type = "l")
+
+
+# Overlay the second set of points
+par(new = TRUE)
+plot(x, z, type = "p", col = "firebrick2", pch = 16, ylab = "", xlab = "", axes = FALSE)
+
+#Add line of best fit
+fit <- lm(log(z) ~ x)
+x_pred <- seq(min(x), max(x), length.out = 100)
+z_pred <- exp(predict(fit, newdata = data.frame(x = x_pred)))
+lines(x_pred, z_pred, col = "firebrick2", type = "l")
+
+
+# Add a label on the right side for Z
+mtext("Count", side = 4, line = 2, col = "firebrick2", cex = 1.2)  # Adjust line and cex as needed
+
+# Add a y-axis on the right side for Z
+axis(4, col = "black", col.axis = "black", las = 1)  # Set color for Z axis
+
+# Add a legend
+legend("topright", legend = c("Mass (g)", "Count"), col = c("blue", "firebrick2"), pch = 16)
+```
+
+
+
+
+
+
