@@ -105,6 +105,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>readxl</li>
 <li>ggplot2</li>
 <li>dplyr</li>
+<li>agricolae</li>
 </ul>
 </section>
 <section id="leaf-area-vs.-distance-analysis" class="level2">
@@ -124,7 +125,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>df_long_nona <span class="ot">&lt;-</span> df_long[<span class="fu">complete.cases</span>(df_long<span class="sc">$</span>Area), ]</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>df_long_nona<span class="sc">$</span>Distance <span class="ot">&lt;-</span> <span class="fu">factor</span>(df_long_nona<span class="sc">$</span>Distance, <span class="at">levels =</span> <span class="fu">unique</span>(df_long_nona<span class="sc">$</span>Distance))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>df_long_nona<span class="sc">$</span>Distance <span class="ot">&lt;-</span> <span class="fu">as.character</span>(df_long_nona<span class="sc">$</span>Distance)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>df_long_nona<span class="sc">$</span>Distance <span class="ot">&lt;-</span> <span class="fu">factor</span>(df_long_nona<span class="sc">$</span>Distance, <span class="at">levels =</span> <span class="fu">unique</span>(df_long_nona<span class="sc">$</span>Distance))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="make-a-box-and-whisker-plot" class="level3">
@@ -134,7 +137,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">""</span>,</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Distance from Colony Main Entrance (m)"</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Leaf Surface Area (cm^2)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Leaf Surface Area (cm^2)"</span>) <span class="sc">+</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.background =</span> <span class="fu">element_rect</span>(<span class="at">fill =</span> <span class="st">"white"</span>),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"gray95"</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">panel.grid.major.x =</span> <span class="fu">element_line</span>(<span class="at">color =</span> <span class="st">"white"</span>))<span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fu">max</span>(df_long_nona<span class="sc">$</span>Area), <span class="at">by =</span> <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Leaf_analysis_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -162,48 +169,137 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
+<section id="leaf-area-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="leaf-area-statistics">Leaf area statistics</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">aov</span>(Area <span class="sc">~</span> Distance, <span class="at">data =</span> df_long_nona)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+Distance      25   28.9  1.1565   3.497 1.45e-08 ***
+Residuals   1527  505.0  0.3307                     
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>tukey_results <span class="ot">&lt;-</span> <span class="fu">HSD.test</span>(model, <span class="st">"Distance"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tukey_results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$statistics
+    MSerror   Df     Mean       CV
+  0.3307066 1527 1.228622 46.80618
+
+$parameters
+   test   name.t ntr StudentizedRange alpha
+  Tukey Distance  26         5.210716  0.05
+
+$means
+        Area       std   r         se   Min   Max     Q25    Q50     Q75
+-1 1.2685682 0.5440600 132 0.05005350 0.256 3.186 0.89475 1.2440 1.50225
+-2 1.0075946 0.4666685  37 0.09454109 0.384 2.343 0.71300 0.8630 1.28900
+0  1.3095806 0.6564874 124 0.05164290 0.349 4.462 0.94325 1.2070 1.55200
+1  1.3194667 0.7202769 135 0.04949423 0.228 5.486 0.88400 1.1340 1.59450
+10 1.0106136 0.5150416  88 0.06130277 0.174 3.567 0.67525 0.9515 1.26750
+11 1.1398406 0.4386382  69 0.06923041 0.235 2.072 0.86000 1.0930 1.48900
+12 1.1920952 0.5417438  21 0.12549077 0.441 2.744 0.90900 1.0420 1.45900
+13 1.2853053 0.5317337  95 0.05900104 0.329 3.052 0.90550 1.1500 1.58600
+14 1.1091429 0.4891396  70 0.06873413 0.239 2.530 0.77425 1.0370 1.34800
+15 1.1121111 0.3901543   9 0.19169032 0.610 1.891 0.86600 1.1590 1.22000
+16 1.2313409 0.4054133  44 0.08669521 0.666 2.338 0.95600 1.1375 1.44300
+17 1.3291778 0.5662934  45 0.08572652 0.283 2.833 0.91800 1.3490 1.62900
+18 1.2903333 0.7899096   9 0.19169032 0.338 3.013 0.70400 1.3420 1.55700
+19 1.1270667 0.4003059  15 0.14848269 0.419 1.909 0.87600 1.0880 1.41900
+2  1.2437477 0.5679338 107 0.05559421 0.306 3.467 0.84200 1.1770 1.50250
+20 1.9068824 1.2455106  17 0.13947520 0.679 5.648 0.90200 1.6720 2.17400
+21 1.6161429 1.0046484   7 0.21735640 0.555 3.538 1.02550 1.2100 1.97950
+22 1.5696190 0.5950433  21 0.12549077 0.650 2.747 1.09900 1.3830 1.95400
+23 1.5100400 0.5362901  25 0.11501419 0.599 2.473 1.10800 1.6120 1.85200
+3  1.2631379 0.5508285 116 0.05339400 0.318 4.060 0.92625 1.2365 1.50200
+4  1.1206974 0.5026705  76 0.06596516 0.381 3.299 0.77125 1.0505 1.33225
+5  1.2599390 0.6813044  82 0.06350597 0.267 5.320 0.84500 1.1240 1.66900
+6  1.1871860 0.5744438  43 0.08769750 0.453 2.764 0.72350 1.0540 1.55500
+7  0.9659348 0.3553319  46 0.08478959 0.293 1.912 0.74200 0.9470 1.15825
+8  1.1664694 0.5291474  98 0.05809094 0.228 3.100 0.82975 1.0830 1.47700
+9  1.1631364 0.4310594  22 0.12260554 0.261 2.243 0.96475 1.1050 1.48250
+
+$comparison
+NULL
+
+$groups
+        Area groups
+20 1.9068824      a
+21 1.6161429     ab
+22 1.5696190     ab
+23 1.5100400     ab
+17 1.3291778     ab
+1  1.3194667      b
+0  1.3095806      b
+18 1.2903333      b
+13 1.2853053      b
+-1 1.2685682      b
+3  1.2631379      b
+5  1.2599390      b
+2  1.2437477      b
+16 1.2313409      b
+12 1.1920952      b
+6  1.1871860      b
+8  1.1664694      b
+9  1.1631364      b
+11 1.1398406      b
+19 1.1270667      b
+4  1.1206974      b
+15 1.1121111      b
+14 1.1091429      b
+10 1.0106136      b
+-2 1.0075946      b
+7  0.9659348      b
+
+attr(,"class")
+[1] "group"</code></pre>
+</div>
+</div>
+</section>
 <section id="leaf-mass-and-count-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="leaf-mass-and-count-analysis">Leaf Mass and Count Analysis</h2>
 <section id="create-a-dataframe" class="level3">
 <h3 class="anchored" data-anchor-id="create-a-dataframe">Create a Dataframe</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the means from the summary_data dataframe</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>area_vector <span class="ot">&lt;-</span> summary_data<span class="sc">$</span>Mean</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>distance_vector <span class="ot">&lt;-</span> summary_data<span class="sc">$</span>Distance</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Extract mass and count from excel</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>mass_count_excel_file_path <span class="ot">&lt;-</span> <span class="st">"~/Desktop/Spring 2024/Field Ecology Lab/Leafcutters Jan 2024/Excel Sheets/Area Data.xlsx"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract the means from the summary_data dataframe</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>area_vector <span class="ot">&lt;-</span> summary_data<span class="sc">$</span>Mean</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>distance_vector <span class="ot">&lt;-</span> summary_data<span class="sc">$</span>Distance</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#Extract mass and count from excel</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>mass_count_excel_file_path <span class="ot">&lt;-</span> <span class="st">"~/Desktop/Spring 2024/Field Ecology Lab/Leafcutters Jan 2024/Excel Sheets/Area Data.xlsx"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>leaf_count_row <span class="ot">&lt;-</span> df_2[<span class="dv">2</span>, ]</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>count_vector <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">unlist</span>(leaf_count_row))</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>count_vector <span class="ot">&lt;-</span> count_vector[count_vector <span class="sc">!=</span> <span class="st">"count"</span>]</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>count_vector <span class="ot">&lt;-</span> count_vector[count_vector <span class="sc">!=</span> <span class="st">"1553"</span>]</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>count_vector <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(count_vector)</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>leaf_mass_row <span class="ot">&lt;-</span> df_2[<span class="dv">1</span>, ]</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>mass_vector <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">unlist</span>(leaf_mass_row))</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>mass_vector <span class="ot">&lt;-</span> mass_vector[mass_vector <span class="sc">!=</span> <span class="st">"mass"</span>]</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>mass_vector <span class="ot">&lt;-</span> mass_vector[mass_vector <span class="sc">!=</span> <span class="st">"39.5"</span>]</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>mass_vector <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(mass_vector)</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>mass_per_leaf <span class="ot">&lt;-</span> mass_vector <span class="sc">/</span> count_vector</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>mass_per_area <span class="ot">&lt;-</span> mass_vector <span class="sc">/</span> area_vector <span class="sc">/</span> count_vector  </span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>quadrat_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">Distance =</span> distance_vector,</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">Area =</span> area_vector,</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">Mass =</span> mass_vector,</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">Count =</span> count_vector,</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">MpreL =</span> mass_per_leaf,</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">MperA =</span> mass_per_area</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">#change row headers</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(quadrat_data) <span class="ot">&lt;-</span></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">"Distance (m)"</span>, <span class="st">"Avg Area (cm²)"</span>, <span class="st">"Mass (g)"</span>, <span class="st">"Count"</span>,<span class="st">"g/leaf"</span>, <span class="st">"g/cm²"</span>)</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(quadrat_data, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>leaf_count_row <span class="ot">&lt;-</span> df_2[<span class="dv">2</span>, ]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>count_vector <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">unlist</span>(leaf_count_row))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>count_vector <span class="ot">&lt;-</span> count_vector[count_vector <span class="sc">!=</span> <span class="st">"count"</span>]</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>count_vector <span class="ot">&lt;-</span> count_vector[count_vector <span class="sc">!=</span> <span class="st">"1553"</span>]</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>count_vector <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(count_vector)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>leaf_mass_row <span class="ot">&lt;-</span> df_2[<span class="dv">1</span>, ]</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>mass_vector <span class="ot">&lt;-</span> <span class="fu">as.vector</span>(<span class="fu">unlist</span>(leaf_mass_row))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>mass_vector <span class="ot">&lt;-</span> mass_vector[mass_vector <span class="sc">!=</span> <span class="st">"mass"</span>]</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>mass_vector <span class="ot">&lt;-</span> mass_vector[mass_vector <span class="sc">!=</span> <span class="st">"39.5"</span>]</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>mass_vector <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(mass_vector)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>mass_per_leaf <span class="ot">&lt;-</span> mass_vector <span class="sc">/</span> count_vector</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>mass_per_area <span class="ot">&lt;-</span> mass_vector <span class="sc">/</span> area_vector <span class="sc">/</span> count_vector  </span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>quadrat_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">Distance =</span> distance_vector,</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">Area =</span> area_vector,</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">Mass =</span> mass_vector,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">Count =</span> count_vector,</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">MpreL =</span> mass_per_leaf,</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">MperA =</span> mass_per_area</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#change row headers</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(quadrat_data) <span class="ot">&lt;-</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">"Distance (m)"</span>, <span class="st">"Avg Area (cm²)"</span>, <span class="st">"Mass (g)"</span>, <span class="st">"Count"</span>,<span class="st">"g/leaf"</span>, <span class="st">"g/cm²"</span>)</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(quadrat_data, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Distance (m) Avg Area (cm²) Mass (g) Count     g/leaf      g/cm²
            -2      1.0075946      0.7    37 0.01891892 0.01877632
@@ -238,96 +334,96 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="plot-leaf-mass-vs.-distance" class="level3">
 <h3 class="anchored" data-anchor-id="plot-leaf-mass-vs.-distance">Plot Leaf Mass vs.&nbsp;Distance</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#establish data</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">23</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> mass_vector[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)]</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> count_vector[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)]</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">main =</span> <span class="st">"Leaf Mass vs. Distance from Main Colony Entrance"</span>, <span class="at">xlab =</span> <span class="st">"Distance (m)"</span>, <span class="at">ylab =</span> <span class="st">"Leaf Mass (g)"</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">pch =</span> <span class="dv">16</span>)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#Add an exponential line of best fit</span></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(y) <span class="sc">~</span> x)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate predicted values for the exponential fit</span></span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>x_pred <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(x), <span class="fu">max</span>(x), <span class="at">length.out =</span> <span class="dv">100</span>)</span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>y_pred <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">predict</span>(fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x_pred)))</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the exponential line to the plot</span></span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_pred, y_pred, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">type =</span> <span class="st">"l"</span>)</span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#add the equation of best fit</span></span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract coefficients and transform back from log scale</span></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(fit)[<span class="dv">1</span>])</span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)[<span class="dv">2</span>]</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the equation on the plot</span></span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>eq <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">"y = %.2f * exp(%.2fx)"</span>, a, b)</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="dv">3</span>, <span class="fu">max</span>(y), eq, <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#establish data</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">23</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> mass_vector[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)]</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> count_vector[<span class="sc">-</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)]</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">main =</span> <span class="st">"Leaf Mass vs. Distance from Main Colony Entrance"</span>, <span class="at">xlab =</span> <span class="st">"Distance (m)"</span>, <span class="at">ylab =</span> <span class="st">"Leaf Mass (g)"</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">pch =</span> <span class="dv">16</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#Add an exponential line of best fit</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(y) <span class="sc">~</span> x)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate predicted values for the exponential fit</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>x_pred <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(x), <span class="fu">max</span>(x), <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>y_pred <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">predict</span>(fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x_pred)))</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the exponential line to the plot</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_pred, y_pred, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">type =</span> <span class="st">"l"</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">#add the equation of best fit</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract coefficients and transform back from log scale</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(fit)[<span class="dv">1</span>])</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)[<span class="dv">2</span>]</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the equation on the plot</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>eq <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">"y = %.2f * exp(%.2fx)"</span>, a, b)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="dv">3</span>, <span class="fu">max</span>(y), eq, <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Leaf_analysis_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+<p><img src="Leaf_analysis_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="plot-leaf-count-vs.-distance" class="level3">
 <h3 class="anchored" data-anchor-id="plot-leaf-count-vs.-distance">Plot Leaf Count vs.&nbsp;Distance</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, z, <span class="at">main =</span> <span class="st">"Leaf Count vs. Distance from Main Colony Entrance"</span>, <span class="at">xlab =</span> <span class="st">"Distance (m)"</span>, <span class="at">ylab =</span> <span class="st">"Leaf Count"</span>, <span class="at">col =</span> <span class="st">"firebrick2"</span>, <span class="at">pch =</span> <span class="dv">16</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(z) <span class="sc">~</span> x)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>x_pred <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(x), <span class="fu">max</span>(x), <span class="at">length.out =</span> <span class="dv">100</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>z_pred <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">predict</span>(fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x_pred)))</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_pred, z_pred, <span class="at">col =</span> <span class="st">"firebrick2"</span>, <span class="at">type =</span> <span class="st">"l"</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(fit)[<span class="dv">1</span>])</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)[<span class="dv">2</span>]</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>eq <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">"z = %.2f * exp(%.2fx)"</span>, a, b)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="dv">3</span>, <span class="fu">max</span>(z), eq, <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, z, <span class="at">main =</span> <span class="st">"Leaf Count vs. Distance from Main Colony Entrance"</span>, <span class="at">xlab =</span> <span class="st">"Distance (m)"</span>, <span class="at">ylab =</span> <span class="st">"Leaf Count"</span>, <span class="at">col =</span> <span class="st">"firebrick2"</span>, <span class="at">pch =</span> <span class="dv">16</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(z) <span class="sc">~</span> x)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>x_pred <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(x), <span class="fu">max</span>(x), <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>z_pred <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">predict</span>(fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x_pred)))</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_pred, z_pred, <span class="at">col =</span> <span class="st">"firebrick2"</span>, <span class="at">type =</span> <span class="st">"l"</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">coef</span>(fit)[<span class="dv">1</span>])</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">coef</span>(fit)[<span class="dv">2</span>]</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>eq <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">"z = %.2f * exp(%.2fx)"</span>, a, b)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="dv">3</span>, <span class="fu">max</span>(z), eq, <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">cex =</span> <span class="fl">0.8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Leaf_analysis_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+<p><img src="Leaf_analysis_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="plot-both-leaf-count-and-mass-vs.-distance-on-the-same-graph" class="level3">
 <h3 class="anchored" data-anchor-id="plot-both-leaf-count-and-mass-vs.-distance-on-the-same-graph">Plot both Leaf Count and Mass vs.&nbsp;Distance on the same graph</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the first plotting region</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the plotting region</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>) <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">oma =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>))</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">type =</span> <span class="st">"p"</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">ylab =</span> <span class="st">""</span>, <span class="at">xlab =</span> <span class="st">"Distance (m)"</span>, <span class="at">axes =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a label on the left side for Y</span></span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"Mass (g)"</span>, <span class="at">side =</span> <span class="dv">2</span>, <span class="at">line =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">cex =</span> <span class="fl">1.2</span>)  <span class="co"># Adjust line and cex as needed</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Add an exponential line of best fit</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(y) <span class="sc">~</span> x)</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate predicted values for the exponential fit</span></span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>x_pred <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(x), <span class="fu">max</span>(x), <span class="at">length.out =</span> <span class="dv">100</span>)</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>y_pred <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">predict</span>(fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x_pred)))</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the exponential line to the plot</span></span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_pred, y_pred, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">type =</span> <span class="st">"l"</span>)</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Overlay the second set of points</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">new =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, z, <span class="at">type =</span> <span class="st">"p"</span>, <span class="at">col =</span> <span class="st">"firebrick2"</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">ylab =</span> <span class="st">""</span>, <span class="at">xlab =</span> <span class="st">""</span>, <span class="at">axes =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co">#Add line of best fit</span></span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(z) <span class="sc">~</span> x)</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>x_pred <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(x), <span class="fu">max</span>(x), <span class="at">length.out =</span> <span class="dv">100</span>)</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>z_pred <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">predict</span>(fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x_pred)))</span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_pred, z_pred, <span class="at">col =</span> <span class="st">"firebrick2"</span>, <span class="at">type =</span> <span class="st">"l"</span>)</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a label on the right side for Z</span></span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"Count"</span>, <span class="at">side =</span> <span class="dv">4</span>, <span class="at">line =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"firebrick2"</span>, <span class="at">cex =</span> <span class="fl">1.2</span>)  <span class="co"># Adjust line and cex as needed</span></span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a y-axis on the right side for Z</span></span>
-<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">4</span>, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">col.axis =</span> <span class="st">"black"</span>, <span class="at">las =</span> <span class="dv">1</span>)  <span class="co"># Set color for Z axis</span></span>
-<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a legend</span></span>
-<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Mass (g)"</span>, <span class="st">"Count"</span>), <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"firebrick2"</span>), <span class="at">pch =</span> <span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the first plotting region</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up the plotting region</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">2</span>) <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">oma =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, y, <span class="at">type =</span> <span class="st">"p"</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">ylab =</span> <span class="st">""</span>, <span class="at">xlab =</span> <span class="st">"Distance (m)"</span>, <span class="at">axes =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a label on the left side for Y</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"Mass (g)"</span>, <span class="at">side =</span> <span class="dv">2</span>, <span class="at">line =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">cex =</span> <span class="fl">1.2</span>)  <span class="co"># Adjust line and cex as needed</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co">#Add an exponential line of best fit</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(y) <span class="sc">~</span> x)</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate predicted values for the exponential fit</span></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>x_pred <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(x), <span class="fu">max</span>(x), <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>y_pred <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">predict</span>(fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x_pred)))</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the exponential line to the plot</span></span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_pred, y_pred, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">type =</span> <span class="st">"l"</span>)</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Overlay the second set of points</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">new =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, z, <span class="at">type =</span> <span class="st">"p"</span>, <span class="at">col =</span> <span class="st">"firebrick2"</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">ylab =</span> <span class="st">""</span>, <span class="at">xlab =</span> <span class="st">""</span>, <span class="at">axes =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a><span class="co">#Add line of best fit</span></span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(z) <span class="sc">~</span> x)</span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a>x_pred <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(x), <span class="fu">max</span>(x), <span class="at">length.out =</span> <span class="dv">100</span>)</span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>z_pred <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fu">predict</span>(fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x_pred)))</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_pred, z_pred, <span class="at">col =</span> <span class="st">"firebrick2"</span>, <span class="at">type =</span> <span class="st">"l"</span>)</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a label on the right side for Z</span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"Count"</span>, <span class="at">side =</span> <span class="dv">4</span>, <span class="at">line =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"firebrick2"</span>, <span class="at">cex =</span> <span class="fl">1.2</span>)  <span class="co"># Adjust line and cex as needed</span></span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a y-axis on the right side for Z</span></span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">4</span>, <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">col.axis =</span> <span class="st">"black"</span>, <span class="at">las =</span> <span class="dv">1</span>)  <span class="co"># Set color for Z axis</span></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a legend</span></span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Mass (g)"</span>, <span class="st">"Count"</span>), <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"firebrick2"</span>), <span class="at">pch =</span> <span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="Leaf_analysis_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+<p><img src="Leaf_analysis_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
