@@ -69,7 +69,10 @@ ggplot(summary_data, aes(x = Distance, y = Mean, fill = factor(Distance))) +
   labs(title = "",
        x = "Distance from Colony Main Entrance (m)",
        y = "Leaf Surface Area (cm^2)") +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white"),
+        panel.grid = element_line(color = "gray95"),
+        panel.grid.major.x = element_line(color = "white"))
 ```
 
 ## Leaf area statistics
