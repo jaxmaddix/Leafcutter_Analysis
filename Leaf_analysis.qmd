@@ -47,23 +47,11 @@ df_long_nona <- df_long[complete.cases(df_long$Area), ]
 df_long_nona$Distance <- as.character(df_long_nona$Distance)
 
 df_long_nona$Distance <- factor(df_long_nona$Distance, levels = unique(df_long_nona$Distance))
-
-has_identical_rows <- any(duplicated(df_long_nona) | duplicated(df_long_nona, fromLast = TRUE))
-
-if (has_identical_rows) {
-  cat("The data frame has identical rows.\n")
-} else {
-  cat("The data frame does not have identical rows.\n")
-}
-
-identical_rows <- df_long_nona[duplicated(df_long_nona) | duplicated(df_long_nona, fromLast = TRUE), ]
-
-unique_df <- df_long_nona[!duplicated(df_long_nona) & !duplicated(df_long_nona, fromLast = TRUE), ]
 ```
 
 ### Make a box-and-whisker plot
 ```{R}
-ggplot(unique_df, aes(x = Distance, y = Area)) +
+ggplot(df_long_nona, aes(x = Distance, y = Area)) +
   geom_boxplot() +
   labs(title = "",
        x = "Distance from Colony Main Entrance (m)",
@@ -71,12 +59,12 @@ ggplot(unique_df, aes(x = Distance, y = Area)) +
   theme(panel.background = element_rect(fill = "white"),
         panel.grid = element_line(color = "white"),
         panel.grid.major.x = element_line(color = "white"))+
-  scale_y_continuous(breaks = seq(0, max(unique_df$Area), by = 0.5))
+  scale_y_continuous(breaks = seq(0, max(df_long_nona$Area), by = 0.5))
 ```
 
 ### Make a scatter plot with jitter
 ```{R}
-ggplot(unique_df, aes(x = Distance, y = Area)) +
+ggplot(df_long_nona, aes(x = Distance, y = Area)) +
   geom_point(position = position_jitter(width = 0.1, height = 0.1), color = "darkgreen", alpha = 0.1) +
   labs(title = "",
        x = "Distance from Colony Main Entrance (m)",
@@ -84,12 +72,12 @@ ggplot(unique_df, aes(x = Distance, y = Area)) +
   theme(panel.background = element_rect(fill = "white"),
         panel.grid = element_line(color = "white"),
         panel.grid.major.x = element_line(color = "white")) +
-  scale_y_continuous(breaks = seq(0, max(unique_df$Area), by = 0.5))
+  scale_y_continuous(breaks = seq(0, max(df_long_nona$Area), by = 0.5))
 ```
 
 ### Add violin plot
 ```{R}
-ggplot(unique_df, aes(x = Area, y = Distance)) +
+ggplot(df_long_nona, aes(x = Area, y = Distance)) +
   geom_violin() +
   geom_sina(color = "darkgreen", alpha = 0.5) +  # Use geom_sina for adjusted jitter
   labs(title = "",
@@ -98,14 +86,14 @@ ggplot(unique_df, aes(x = Area, y = Distance)) +
   theme(panel.background = element_rect(fill = "white"),
         panel.grid = element_line(color = "white"),
         panel.grid.major.y = element_line(color = "white")) +
-  scale_x_continuous(breaks = seq(0, max(unique_df$Area), by = 0.5)) +
+  scale_x_continuous(breaks = seq(0, max(df_long_nona$Area), by = 0.5)) +
   coord_flip()
 ```
 
 ### Make a bar chart
 ```{R}
 # Calculate means and standard errors using dplyr
-summary_data <- unique_df %>%
+summary_data <- df_long_nona %>%
   group_by(Distance) %>%
   summarize(Mean = mean(Area, na.rm = TRUE),
             SE = sd(Area, na.rm = TRUE) / sqrt(sum(!is.na(Area))))
@@ -125,11 +113,11 @@ ggplot(summary_data, aes(x = Distance, y = Mean, fill = factor(Distance))) +
 ## Leaf area statistics
 ### One-way ANOVA
 ```{R, echo=FALSE, include=FALSE}
-na.omit(unique_df)
+na.omit(df_long_nona)
 ```
 
 ```{R}
-model <- aov(Area ~ Distance, data = unique_df)
+model <- aov(Area ~ Distance, data = df_long_nona)
 summary(model)
 ```
 
@@ -155,13 +143,13 @@ remove_outliers <- function(x) {
 }
 
 # Identify and store outliers
-outliers_list <- unique_df %>%
+outliers_list <- df_long_nona %>%
   group_by(Distance) %>%
   summarise(across(all_of("Area"), remove_outliers)) %>%
   unnest(cols = c(Area))
 
 # Create df_no_outliers by removing outliers for each column
-df_no_outliers <- unique_df %>%
+df_no_outliers <- df_long_nona %>%
   anti_join(outliers_list, by = c("Distance" = "Distance", "Area" = "Area"))
 ```
 
@@ -181,15 +169,13 @@ df_2 <- read_excel(mass_count_excel_file_path)
 ```
 
 ```{R}
-# Assuming unique_df is your dataframe
-distance_counts <- table(unique_df$Distance)
 
-# Print the counts
-print(distance_counts)
-
-
-
+leaf_count_row <- df_2[2, ]
+count_vector <- as.vector(unlist(leaf_count_row))
+count_vector <- count_vector[count_vector != "count"]
+count_vector <- count_vector[count_vector != "1554"]
 count_vector <- as.numeric(count_vector)
+
 
 leaf_mass_row <- df_2[1, ]
 mass_vector <- as.vector(unlist(leaf_mass_row))
@@ -271,8 +257,27 @@ eq <- sprintf("z = %.2f * exp(%.2fx)", a, b)
 text(3, max(z), eq, pos = 4, col = "black", cex = 0.8)
 ```
 
-### Plot both Leaf Count and Mass vs. Distance on the same graph
+### Plot Leaf Count vs. Mass
+```{R}
+plot(z, y, main = "", xlab = "", ylab = "", col = "maroon", pch = 16)
 
+# Add an exponential line of best fit
+fit <- lm(log(y) ~ z)
+
+# Generate predicted values for the exponential fit
+z_pred <- seq(min(z), max(z), length.out = 100)
+y_pred <- exp(predict(fit, newdata = data.frame(z = z_pred)))
+
+# Add the exponential line to the plot
+lines(z_pred, y_pred, col = "maroon", type = "l")
+
+a <- exp(coef(fit)[1])
+b <- coef(fit)[2]
+eq <- sprintf("z = %.2f * exp(%.2fx)", a, b)
+text(3, max(y), eq, pos = 4, col = "black", cex = 0.8)
+```
+
+### Plot both Leaf Count and Mass vs. Distance on the same graph
 ```{R}
 # Set up the first plotting region
 # Set up the plotting region
