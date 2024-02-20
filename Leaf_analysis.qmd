@@ -10,23 +10,30 @@ From January 1-15, 2024, I visited Costa Rica as a class trip. I conducted an ob
 * tidyverse
 * readxl
 * ggplot2
+* ggforce
 * dplyr
 * agricolae
+* purrr
+* readxl
+* openxlsx
 
 ```{R, echo=FALSE, include=FALSE}
 library(tidyverse)
 library(readxl)
 library(ggplot2)
+library(ggforce)
 library(dplyr)
 library(agricolae)
+library(purrr)
+library(readxl)
+library(openxlsx)
 ```
 
 ## Leaf Area vs. Distance Analysis
 
 ### Make dataframe from excel
 ```{R}
-
-df <- read_excel("~/Desktop/Spring 2024/Field Ecology Lab/Leafcutters Jan 2024/Excel Sheets/No statistics.xlsx")
+df <- read_xlsx("~/Desktop/Spring 2024/Field Ecology Lab/Leafcutters Jan 2024/Excel Sheets/No statistics.xlsx")
 ```
 
 ### Tidy, remove NA, and order
@@ -40,11 +47,23 @@ df_long_nona <- df_long[complete.cases(df_long$Area), ]
 df_long_nona$Distance <- as.character(df_long_nona$Distance)
 
 df_long_nona$Distance <- factor(df_long_nona$Distance, levels = unique(df_long_nona$Distance))
+
+has_identical_rows <- any(duplicated(df_long_nona) | duplicated(df_long_nona, fromLast = TRUE))
+
+if (has_identical_rows) {
+  cat("The data frame has identical rows.\n")
+} else {
+  cat("The data frame does not have identical rows.\n")
+}
+
+identical_rows <- df_long_nona[duplicated(df_long_nona) | duplicated(df_long_nona, fromLast = TRUE), ]
+
+unique_df <- df_long_nona[!duplicated(df_long_nona) & !duplicated(df_long_nona, fromLast = TRUE), ]
 ```
 
 ### Make a box-and-whisker plot
 ```{R}
-ggplot(df_long_nona, aes(x = Distance, y = Area)) +
+ggplot(unique_df, aes(x = Distance, y = Area)) +
   geom_boxplot() +
   labs(title = "",
        x = "Distance from Colony Main Entrance (m)",
@@ -52,13 +71,41 @@ ggplot(df_long_nona, aes(x = Distance, y = Area)) +
   theme(panel.background = element_rect(fill = "white"),
         panel.grid = element_line(color = "white"),
         panel.grid.major.x = element_line(color = "white"))+
-  scale_y_continuous(breaks = seq(0, max(df_long_nona$Area), by = 0.5))
+  scale_y_continuous(breaks = seq(0, max(unique_df$Area), by = 0.5))
+```
+
+### Make a scatter plot with jitter
+```{R}
+ggplot(unique_df, aes(x = Distance, y = Area)) +
+  geom_point(position = position_jitter(width = 0.1, height = 0.1), color = "darkgreen", alpha = 0.1) +
+  labs(title = "",
+       x = "Distance from Colony Main Entrance (m)",
+       y = "Leaf Surface Area (cm^2)") +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_line(color = "white"),
+        panel.grid.major.x = element_line(color = "white")) +
+  scale_y_continuous(breaks = seq(0, max(unique_df$Area), by = 0.5))
+```
+
+### Add violin plot
+```{R}
+ggplot(unique_df, aes(x = Area, y = Distance)) +
+  geom_violin() +
+  geom_sina(color = "darkgreen", alpha = 0.5) +  # Use geom_sina for adjusted jitter
+  labs(title = "",
+       x = "Leaf Surface Area (cm^2)",
+       y = "Distance from Colony Main Entrance (m)") +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_line(color = "white"),
+        panel.grid.major.y = element_line(color = "white")) +
+  scale_x_continuous(breaks = seq(0, max(unique_df$Area), by = 0.5)) +
+  coord_flip()
 ```
 
 ### Make a bar chart
 ```{R}
 # Calculate means and standard errors using dplyr
-summary_data <- df_long_nona %>%
+summary_data <- unique_df %>%
   group_by(Distance) %>%
   summarize(Mean = mean(Area, na.rm = TRUE),
             SE = sd(Area, na.rm = TRUE) / sqrt(sum(!is.na(Area))))
@@ -78,12 +125,11 @@ ggplot(summary_data, aes(x = Distance, y = Mean, fill = factor(Distance))) +
 ## Leaf area statistics
 ### One-way ANOVA
 ```{R, echo=FALSE, include=FALSE}
-
-na.omit(df_long_nona)
+na.omit(unique_df)
 ```
 
 ```{R}
-model <- aov(Area ~ Distance, data = df_long_nona)
+model <- aov(Area ~ Distance, data = unique_df)
 summary(model)
 ```
 
@@ -92,6 +138,33 @@ summary(model)
 tukey_results <- HSD.test(model, "Distance")
 print(tukey_results)
 ```
+
+## Removal of outliers
+```{R}
+# Load necessary libraries
+library(dplyr)
+
+# Specify the columns for which you want to check outliers
+columns_to_check <- c("Area", "Distance")
+
+# Function to remove outliers based on box-and-whisker plot
+remove_outliers <- function(x) {
+  bp <- boxplot(x, plot = FALSE)
+  outliers <- bp$out
+  return(outliers)
+}
+
+# Identify and store outliers
+outliers_list <- unique_df %>%
+  group_by(Distance) %>%
+  summarise(across(all_of("Area"), remove_outliers)) %>%
+  unnest(cols = c(Area))
+
+# Create df_no_outliers by removing outliers for each column
+df_no_outliers <- unique_df %>%
+  anti_join(outliers_list, by = c("Distance" = "Distance", "Area" = "Area"))
+```
+
 
 ## Leaf Mass and Count Analysis
 ### Create a Dataframe
@@ -106,11 +179,16 @@ mass_count_excel_file_path <- "~/Desktop/Spring 2024/Field Ecology Lab/Leafcutte
 ```{R, include=FALSE}
 df_2 <- read_excel(mass_count_excel_file_path)
 ```
+
 ```{R}
-leaf_count_row <- df_2[2, ]
-count_vector <- as.vector(unlist(leaf_count_row))
-count_vector <- count_vector[count_vector != "count"]
-count_vector <- count_vector[count_vector != "1553"]
+# Assuming unique_df is your dataframe
+distance_counts <- table(unique_df$Distance)
+
+# Print the counts
+print(distance_counts)
+
+
+
 count_vector <- as.numeric(count_vector)
 
 leaf_mass_row <- df_2[1, ]
@@ -240,7 +318,9 @@ legend("topright", legend = c("Mass (g)", "Count"), col = c("blue", "firebrick2"
 ```{R}
 df_4 <- data.frame(
   x = distance_vector,
-  ar = area_vector
+  ar = area_vector,
+  ml = mass_per_leaf,
+  ma = mass_per_area
 )
 df_4$x <- as.numeric(as.character(df_4$x))
 
@@ -268,10 +348,10 @@ text(max(df_4$x), max(df_4$ar) - 0.1 * diff(range(df_4$ar)), r_squared_text, pos
 ### Plot Mass per Leaf vs. Distance
 ```{R}
 # Fit a linear regression model
-model <- lm(ml ~ x, data = df_3)
+model <- lm(ml ~ x, data = df_4)
 
 # Create a scatter plot
-plot(df_3$x, df_3$ml, main = "Mass per Leaf vs. Distance from Main Colony Entrance", xlab = "Distance (m)", ylab = "Mass per Leaf", col = "purple", pch = 16)
+plot(df_4$x, df_4$ml, main = "Mass per Leaf vs. Distance from Main Colony Entrance", xlab = "Distance (m)", ylab = "Mass per Leaf", col = "purple", pch = 16)
 
 # Add the line of best fit to the plot
 abline(model, col = "purple")
@@ -281,40 +361,27 @@ coefficients <- coef(model)
 
 # Add the equation of the line
 equation <- paste("ml =", round(coefficients[1], 2), "+", round(coefficients[2], 2), "* x")
-text(min(df_3$x), max(df_3$ml), equation, pos = 4, col = "purple")
+text(min(df_4$x), max(df_4$ml), equation, pos = 4, col = "purple")
 
 # Calculate R-squared
 r_squared <- summary(model)$r.squared
 
 # Add R-squared value to the plot
 r_squared_text <- paste("R-squared =", round(r_squared, 3))
-text(min(df_3$x), max(df_3$ml) - 0.1 * diff(range(df_3$ml)), r_squared_text, pos = 4, col = "black")
+text(min(df_4$x), max(df_4$ml) - 0.1 * diff(range(df_4$ml)), r_squared_text, pos = 4, col = "black")
 ```
 
 ### Plot Mass per Area vs. Distance
 ```{R}
-# Fit a linear regression model
-model <- lm(ma ~ x, data = df_3)
-
-# Create a scatter plot
-plot(df_3$x, df_3$ma, main = "Mass per Area vs. Distance from Main Colony Entrance", xlab = "Distance (m)", ylab = "Mass per Area", col = "orange", pch = 16)
-
-# Add the line of best fit to the plot
+model <- lm(ma ~ x, data = df_4)
+plot(df_4$x, df_4$ma, main = "Mass per Area vs. Distance from Main Colony Entrance", xlab = "Distance (m)", ylab = "Mass per Area", col = "orange", pch = 16)
 abline(model, col = "orange")
-
-# Extract coefficients
 coefficients <- coef(model)
-
-# Add the equation of the line
 equation <- paste("y =", round(coefficients[1], 2), "+", round(coefficients[2], 2), "* x")
-text(min(df_3$x), max(df_3$ma), equation, pos = 4, col = "orange")
-
-# Calculate R-squared
+text(min(df_4$x), max(df_4$ma), equation, pos = 4, col = "orange")
 r_squared <- summary(model)$r.squared
-
-# Add R-squared value to the plot
 r_squared_text <- paste("R-squared =", round(r_squared, 3))
-text(min(df_3$x), max(df_3$ma) - 0.1 * diff(range(df_3$ma)), r_squared_text, pos = 4, col = "black")
+text(min(df_4$x), max(df_4$ma) - 0.1 * diff(range(df_4$ma)), r_squared_text, pos = 4, col = "black")
 ```
 
 
