@@ -327,19 +327,35 @@ df_4 <- data.frame(
   ml = mass_per_leaf,
   ma = mass_per_area
 )
+
 df_4$x <- as.numeric(as.character(df_4$x))
 
-# Fit a linear regression model
-model <- lm(ar ~ x, data = df_4)
+# Fit a quadratic regression model
+model <- lm(ar ~ poly(x, degree = 2, raw = TRUE), data = df_4)
 
 # Create a scatter plot
 plot(df_4$x, df_4$ar, main = "Area per Leaf vs. Distance from Main Colony Entrance", xlab = "Distance (m)", ylab = "Area per Leaf", col = "darkgreen", pch = 16)
 
+# Add the quadratic regression curve
+lines(df_4$x, predict(model), col = "darkgreen", type = "l")
+
 # Extract coefficients
 coefficients <- coef(model)
 
-# Add the equation of the line
-equation <- paste("y =", round(coefficients[1], 2), "+", round(coefficients[2], 2), "* x")
+# Custom function for formatting in scientific notation with 10^-n
+format_sci_notation <- function(value, digits = 3) {
+  exponent <- floor(log10(abs(value)))
+  coefficient <- value / 10^exponent
+  return(paste0(format(signif(coefficient, digits = digits), nsmall = digits), "(10^-", abs(exponent),")"))
+}
+
+# Add the equation of the curve in scientific notation with 3 sigfigs
+equation <- paste0("y = ", format(signif(coefficients[1], digits = 3)), 
+                  ifelse(coefficients[2] < 0, " - ", " + "), 
+                  format(abs(signif(coefficients[2], digits = 3))), "x", 
+                  ifelse(coefficients[3] < 0, " - ", " + "), 
+                  format_sci_notation(abs(coefficients[3])), "x²")
+
 text(min(df_4$x), max(df_4$ar), equation, pos = 4, col = "darkgreen")
 
 # Calculate R-squared
@@ -347,7 +363,7 @@ r_squared <- summary(model)$r.squared
 
 # Add R-squared value to the plot
 r_squared_text <- paste("R-squared =", round(r_squared, 3))
-text(max(df_4$x), max(df_4$ar) - 0.1 * diff(range(df_4$ar)), r_squared_text, pos = 4, col = "black")
+text(min(df_4$x), max(df_4$ar) - 0.1 * diff(range(df_4$ar)), r_squared_text, pos = 4, col = "black")
 ```
 
 ### Plot Mass per Leaf vs. Distance

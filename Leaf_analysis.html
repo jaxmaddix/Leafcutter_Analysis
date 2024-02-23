@@ -562,27 +562,43 @@ dplyr 1.1.0.
 <span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ml =</span> mass_per_leaf,</span>
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ma =</span> mass_per_area</span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>df_4<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_4<span class="sc">$</span>x))</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a linear regression model</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(ar <span class="sc">~</span> x, <span class="at">data =</span> df_4)</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a scatter plot</span></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df_4<span class="sc">$</span>x, df_4<span class="sc">$</span>ar, <span class="at">main =</span> <span class="st">"Area per Leaf vs. Distance from Main Colony Entrance"</span>, <span class="at">xlab =</span> <span class="st">"Distance (m)"</span>, <span class="at">ylab =</span> <span class="st">"Area per Leaf"</span>, <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">pch =</span> <span class="dv">16</span>)</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract coefficients</span></span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>coefficients <span class="ot">&lt;-</span> <span class="fu">coef</span>(model)</span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the equation of the line</span></span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>equation <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"y ="</span>, <span class="fu">round</span>(coefficients[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">"+"</span>, <span class="fu">round</span>(coefficients[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">"* x"</span>)</span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">min</span>(df_4<span class="sc">$</span>x), <span class="fu">max</span>(df_4<span class="sc">$</span>ar), equation, <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"darkgreen"</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>df_4<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(df_4<span class="sc">$</span>x))</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a quadratic regression model</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(ar <span class="sc">~</span> <span class="fu">poly</span>(x, <span class="at">degree =</span> <span class="dv">2</span>, <span class="at">raw =</span> <span class="cn">TRUE</span>), <span class="at">data =</span> df_4)</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a scatter plot</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df_4<span class="sc">$</span>x, df_4<span class="sc">$</span>ar, <span class="at">main =</span> <span class="st">"Area per Leaf vs. Distance from Main Colony Entrance"</span>, <span class="at">xlab =</span> <span class="st">"Distance (m)"</span>, <span class="at">ylab =</span> <span class="st">"Area per Leaf"</span>, <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">pch =</span> <span class="dv">16</span>)</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the quadratic regression curve</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(df_4<span class="sc">$</span>x, <span class="fu">predict</span>(model), <span class="at">col =</span> <span class="st">"darkgreen"</span>, <span class="at">type =</span> <span class="st">"l"</span>)</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract coefficients</span></span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>coefficients <span class="ot">&lt;-</span> <span class="fu">coef</span>(model)</span>
 <span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate R-squared</span></span>
-<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>r_squared <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>r.squared</span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Add R-squared value to the plot</span></span>
-<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>r_squared_text <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"R-squared ="</span>, <span class="fu">round</span>(r_squared, <span class="dv">3</span>))</span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">max</span>(df_4<span class="sc">$</span>x), <span class="fu">max</span>(df_4<span class="sc">$</span>ar) <span class="sc">-</span> <span class="fl">0.1</span> <span class="sc">*</span> <span class="fu">diff</span>(<span class="fu">range</span>(df_4<span class="sc">$</span>ar)), r_squared_text, <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"black"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Custom function for formatting in scientific notation with 10^-n</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>format_sci_notation <span class="ot">&lt;-</span> <span class="cf">function</span>(value, <span class="at">digits =</span> <span class="dv">3</span>) {</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>  exponent <span class="ot">&lt;-</span> <span class="fu">floor</span>(<span class="fu">log10</span>(<span class="fu">abs</span>(value)))</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>  coefficient <span class="ot">&lt;-</span> value <span class="sc">/</span> <span class="dv">10</span><span class="sc">^</span>exponent</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">paste0</span>(<span class="fu">format</span>(<span class="fu">signif</span>(coefficient, <span class="at">digits =</span> digits), <span class="at">nsmall =</span> digits), <span class="st">"(10^-"</span>, <span class="fu">abs</span>(exponent),<span class="st">")"</span>))</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the equation of the curve in scientific notation with 3 sigfigs</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>equation <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">"y = "</span>, <span class="fu">format</span>(<span class="fu">signif</span>(coefficients[<span class="dv">1</span>], <span class="at">digits =</span> <span class="dv">3</span>)), </span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">ifelse</span>(coefficients[<span class="dv">2</span>] <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="st">" - "</span>, <span class="st">" + "</span>), </span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">format</span>(<span class="fu">abs</span>(<span class="fu">signif</span>(coefficients[<span class="dv">2</span>], <span class="at">digits =</span> <span class="dv">3</span>))), <span class="st">"x"</span>, </span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">ifelse</span>(coefficients[<span class="dv">3</span>] <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="st">" - "</span>, <span class="st">" + "</span>), </span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>                  <span class="fu">format_sci_notation</span>(<span class="fu">abs</span>(coefficients[<span class="dv">3</span>])), <span class="st">"x²"</span>)</span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">min</span>(df_4<span class="sc">$</span>x), <span class="fu">max</span>(df_4<span class="sc">$</span>ar), equation, <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"darkgreen"</span>)</span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate R-squared</span></span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>r_squared <span class="ot">&lt;-</span> <span class="fu">summary</span>(model)<span class="sc">$</span>r.squared</span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Add R-squared value to the plot</span></span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>r_squared_text <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"R-squared ="</span>, <span class="fu">round</span>(r_squared, <span class="dv">3</span>))</span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">min</span>(df_4<span class="sc">$</span>x), <span class="fu">max</span>(df_4<span class="sc">$</span>ar) <span class="sc">-</span> <span class="fl">0.1</span> <span class="sc">*</span> <span class="fu">diff</span>(<span class="fu">range</span>(df_4<span class="sc">$</span>ar)), r_squared_text, <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"black"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Leaf_analysis_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
 </div>
