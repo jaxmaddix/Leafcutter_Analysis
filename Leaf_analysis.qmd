@@ -153,6 +153,55 @@ df_no_outliers <- df_long_nona %>%
   anti_join(outliers_list, by = c("Distance" = "Distance", "Area" = "Area"))
 ```
 
+### Make a jittered violin plot without outliers
+```{R}
+ggplot(df_no_outliers, aes(x = Area, y = Distance)) +
+  geom_violin() +
+  geom_sina(color = "darkgreen", alpha = 0.5) +  # Use geom_sina for adjusted jitter
+  labs(title = "",
+       x = "Leaf Surface Area (cm^2)",
+       y = "Distance from Colony Main Entrance (m)") +
+  theme(panel.background = element_rect(fill = "white"),
+        panel.grid = element_line(color = "white"),
+        panel.grid.major.y = element_line(color = "white")) +
+  scale_x_continuous(breaks = seq(0, max(df_no_outliers$Area), by = 0.5)) +
+  coord_flip()
+```
+### ANOVA without outliers
+```{R, echo=FALSE, include=FALSE}
+na.omit(df_no_outliers)
+```
+
+```{R}
+model <- aov(Area ~ Distance, data = df_no_outliers)
+summary(model)
+```
+
+### Tukey without outliers
+```{R}
+tukey_results <- HSD.test(model, "Distance")
+print(tukey_results)
+```
+
+### Make a bar chart without outliers
+```{R}
+# Calculate means and standard errors using dplyr
+summary_data <- df_no_outliers %>%
+  group_by(Distance) %>%
+  summarize(Mean = mean(Area, na.rm = TRUE),
+            SE = sd(Area, na.rm = TRUE) / sqrt(sum(!is.na(Area))))
+
+ggplot(summary_data, aes(x = Distance, y = Mean, fill = factor(Distance))) +
+  geom_bar(stat = "identity", position = "dodge", fill = ifelse(summary_data$Distance == "0", "firebrick3", "darkslategray4")) +
+  geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), position = position_dodge(width = 0.8), width = 0.25) +
+  labs(title = "",
+       x = "Distance from Colony Main Entrance (m)",
+       y = "Leaf Surface Area (cm^2)") +
+  theme(legend.position = "none",
+        panel.background = element_rect(fill = "white"),
+        panel.grid = element_line(color = "white"),
+        panel.grid.major.x = element_line(color = "white"))
+```
 
 ## Leaf Mass and Count Analysis
 ### Create a Dataframe
