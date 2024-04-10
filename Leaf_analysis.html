@@ -221,8 +221,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>              Df Sum Sq Mean Sq F value   Pr(&gt;F)    
-Distance      25   28.9  1.1553   3.496 1.46e-08 ***
-Residuals   1528  505.0  0.3305                     
+Distance      25   27.8  1.1121   3.685 2.74e-09 ***
+Residuals   1524  459.9  0.3018                     
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -236,40 +236,40 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>$statistics
     MSerror   Df     Mean       CV
-  0.3304655 1528 1.228566 46.79126
+  0.3017987 1524 1.220206 45.02206
 
 $parameters
    test   name.t ntr StudentizedRange alpha
-  Tukey Distance  26          5.21071  0.05
+  Tukey Distance  26         5.210735  0.05
 
 $means
         Area       std   r         se   Min   Max     Q25    Q50     Q75
--1 1.2685682 0.5440600 132 0.05003526 0.256 3.186 0.89475 1.2440 1.50225
--2 1.0075946 0.4666685  37 0.09450662 0.384 2.343 0.71300 0.8630 1.28900
-0  1.3095806 0.6564874 124 0.05162407 0.349 4.462 0.94325 1.2070 1.55200
-1  1.3181765 0.7173651 136 0.04929395 0.228 5.486 0.88450 1.1385 1.59175
-10 1.0106136 0.5150416  88 0.06128042 0.174 3.567 0.67525 0.9515 1.26750
-11 1.1398406 0.4386382  69 0.06920517 0.235 2.072 0.86000 1.0930 1.48900
-12 1.1920952 0.5417438  21 0.12544502 0.441 2.744 0.90900 1.0420 1.45900
-13 1.2853053 0.5317337  95 0.05897953 0.329 3.052 0.90550 1.1500 1.58600
-14 1.1091429 0.4891396  70 0.06870907 0.239 2.530 0.77425 1.0370 1.34800
-15 1.1121111 0.3901543   9 0.19162044 0.610 1.891 0.86600 1.1590 1.22000
-16 1.2313409 0.4054133  44 0.08666361 0.666 2.338 0.95600 1.1375 1.44300
-17 1.3291778 0.5662934  45 0.08569527 0.283 2.833 0.91800 1.3490 1.62900
-18 1.2903333 0.7899096   9 0.19162044 0.338 3.013 0.70400 1.3420 1.55700
-19 1.1270667 0.4003059  15 0.14842856 0.419 1.909 0.87600 1.0880 1.41900
-2  1.2437477 0.5679338 107 0.05557394 0.306 3.467 0.84200 1.1770 1.50250
-20 1.9064706 1.2458729  17 0.13942435 0.680 5.650 0.90000 1.6700 2.17000
-21 1.6171429 1.0047838   7 0.21727716 0.560 3.540 1.02500 1.2100 1.98000
-22 1.5690476 0.5954150  21 0.12544502 0.650 2.750 1.10000 1.3800 1.95000
-23 1.5104000 0.5356575  25 0.11497226 0.600 2.470 1.11000 1.6100 1.85000
-3  1.2631379 0.5508285 116 0.05337453 0.318 4.060 0.92625 1.2365 1.50200
-4  1.1206974 0.5026705  76 0.06594112 0.381 3.299 0.77125 1.0505 1.33225
-5  1.2599390 0.6813044  82 0.06348281 0.267 5.320 0.84500 1.1240 1.66900
-6  1.1871860 0.5744438  43 0.08766553 0.453 2.764 0.72350 1.0540 1.55500
-7  0.9659348 0.3553319  46 0.08475868 0.293 1.912 0.74200 0.9470 1.15825
-8  1.1664694 0.5291474  98 0.05806976 0.228 3.100 0.82975 1.0830 1.47700
-9  1.1631364 0.4310594  22 0.12256085 0.261 2.243 0.96475 1.1050 1.48250
+-1 1.2685682 0.5440600 132 0.04781583 0.256 3.186 0.89475 1.2440 1.50225
+-2 1.0075946 0.4666685  37 0.09031457 0.384 2.343 0.71300 0.8630 1.28900
+0  1.3095806 0.6564874 124 0.04933417 0.349 4.462 0.94325 1.2070 1.55200
+1  1.2668134 0.5776422 134 0.04745765 0.228 3.100 0.88350 1.1340 1.58075
+10 1.0106136 0.5150416  88 0.05856219 0.174 3.567 0.67525 0.9515 1.26750
+11 1.1398406 0.4386382  69 0.06613542 0.235 2.072 0.86000 1.0930 1.48900
+12 1.1920952 0.5417438  21 0.11988063 0.441 2.744 0.90900 1.0420 1.45900
+13 1.2853053 0.5317337  95 0.05636336 0.329 3.052 0.90550 1.1500 1.58600
+14 1.1091429 0.4891396  70 0.06566133 0.239 2.530 0.77425 1.0370 1.34800
+15 1.1121111 0.3901543   9 0.18312069 0.610 1.891 0.86600 1.1590 1.22000
+16 1.2313409 0.4054133  44 0.08281945 0.666 2.338 0.95600 1.1375 1.44300
+17 1.3291778 0.5662934  45 0.08189406 0.283 2.833 0.91800 1.3490 1.62900
+18 1.2903333 0.7899096   9 0.18312069 0.338 3.013 0.70400 1.3420 1.55700
+19 1.1270667 0.4003059  15 0.14184468 0.419 1.909 0.87600 1.0880 1.41900
+2  1.2268774 0.5430265 106 0.05335876 0.306 3.467 0.84100 1.1690 1.49575
+20 1.9064706 1.2458729  17 0.13323987 0.680 5.650 0.90000 1.6700 2.17000
+21 1.6171429 1.0047838   7 0.20763935 0.560 3.540 1.02500 1.2100 1.98000
+22 1.5690476 0.5954150  21 0.11988063 0.650 2.750 1.10000 1.3800 1.95000
+23 1.5104000 0.5356575  25 0.10987241 0.600 2.470 1.11000 1.6100 1.85000
+3  1.2631379 0.5508285 116 0.05100699 0.318 4.060 0.92625 1.2365 1.50200
+4  1.1206974 0.5026705  76 0.06301615 0.381 3.299 0.77125 1.0505 1.33225
+5  1.2098148 0.5112562  81 0.06104023 0.267 2.508 0.84400 1.1210 1.66300
+6  1.1871860 0.5744438  43 0.08377693 0.453 2.764 0.72350 1.0540 1.55500
+7  0.9659348 0.3553319  46 0.08099902 0.293 1.912 0.74200 0.9470 1.15825
+8  1.1664694 0.5291474  98 0.05549395 0.228 3.100 0.82975 1.0830 1.47700
+9  1.1631364 0.4310594  22 0.11712439 0.261 2.243 0.96475 1.1050 1.48250
 
 $comparison
 NULL
@@ -280,16 +280,16 @@ $groups
 21 1.6171429     ab
 22 1.5690476     ab
 23 1.5104000     ab
-17 1.3291778     ab
-1  1.3181765      b
+17 1.3291778      b
 0  1.3095806      b
 18 1.2903333      b
 13 1.2853053      b
 -1 1.2685682      b
+1  1.2668134      b
 3  1.2631379      b
-5  1.2599390      b
-2  1.2437477      b
 16 1.2313409      b
+2  1.2268774      b
+5  1.2098148      b
 12 1.1920952      b
 6  1.1871860      b
 8  1.1664694      b
@@ -462,13 +462,13 @@ attr(,"class")
 <h3 class="anchored" data-anchor-id="make-a-bar-chart-without-outliers">Make a bar chart without outliers</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate means and standard errors using dplyr</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>summary_data <span class="ot">&lt;-</span> df_no_outliers <span class="sc">%&gt;%</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>summary_data2 <span class="ot">&lt;-</span> df_no_outliers <span class="sc">%&gt;%</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Distance) <span class="sc">%&gt;%</span></span>
 <span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">Mean =</span> <span class="fu">mean</span>(Area, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">SE =</span> <span class="fu">sd</span>(Area, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>(<span class="sc">!</span><span class="fu">is.na</span>(Area))))</span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(summary_data, <span class="fu">aes</span>(<span class="at">x =</span> Distance, <span class="at">y =</span> Mean, <span class="at">fill =</span> <span class="fu">factor</span>(Distance))) <span class="sc">+</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">fill =</span> <span class="fu">ifelse</span>(summary_data<span class="sc">$</span>Distance <span class="sc">==</span> <span class="st">"0"</span>, <span class="st">"firebrick3"</span>, <span class="st">"darkslategray4"</span>)) <span class="sc">+</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(summary_data2, <span class="fu">aes</span>(<span class="at">x =</span> Distance, <span class="at">y =</span> Mean, <span class="at">fill =</span> <span class="fu">factor</span>(Distance))) <span class="sc">+</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>, <span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">fill =</span> <span class="fu">ifelse</span>(summary_data2<span class="sc">$</span>Distance <span class="sc">==</span> <span class="st">"0"</span>, <span class="st">"firebrick3"</span>, <span class="st">"darkslategray4"</span>)) <span class="sc">+</span></span>
 <span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> Mean <span class="sc">-</span> SE, <span class="at">ymax =</span> Mean <span class="sc">+</span> SE), <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">0.8</span>), <span class="at">width =</span> <span class="fl">0.25</span>) <span class="sc">+</span></span>
 <span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">""</span>,</span>
 <span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Distance from Colony Main Entrance (m)"</span>,</span>
@@ -528,30 +528,30 @@ attr(,"class")
 <span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(quadrat_data, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Distance (m) Avg Area (cm²) Mass (g) Count     g/leaf      g/cm²
-           -2      0.9705000      0.7    37 0.01891892 0.01949399
-           -1      1.2076693      4.0   132 0.03030303 0.02509216
-            0      1.2087288      4.0   124 0.03225806 0.02668759
-            1      1.2189231      3.9   136 0.02867647 0.02352607
-            2      1.1928654      3.7   107 0.03457944 0.02898855
-            3      1.2126637      2.5   116 0.02155172 0.01777222
-            4      1.0555205      1.2    76 0.01578947 0.01495894
+           -2      1.0075946      0.7    37 0.01891892 0.01877632
+           -1      1.2685682      4.0   132 0.03030303 0.02388759
+            0      1.3095806      4.0   124 0.03225806 0.02463236
+            1      1.2668134      3.9   136 0.02867647 0.02263670
+            2      1.2268774      3.7   107 0.03457944 0.02818492
+            3      1.2631379      2.5   116 0.02155172 0.01706205
+            4      1.1206974      1.2    76 0.01578947 0.01408897
             5      1.2098148      2.6    82 0.03170732 0.02620841
             6      1.1871860      1.0    43 0.02325581 0.01958902
-            7      0.9449111      0.6    46 0.01304348 0.01380392
-            8      1.1166316      2.8    98 0.02857143 0.02558716
+            7      0.9659348      0.6    46 0.01304348 0.01350348
+            8      1.1664694      2.8    98 0.02857143 0.02449394
             9      1.1631364      0.5    22 0.02272727 0.01953965
-           10      0.9641163      1.4    88 0.01590909 0.01650122
+           10      1.0106136      1.4    88 0.01590909 0.01574201
            11      1.1398406      1.8    69 0.02608696 0.02288650
-           12      1.1145000      0.5    21 0.02380952 0.02136341
-           13      1.2307174      2.1    95 0.02210526 0.01796128
-           14      1.0506418      1.3    70 0.01857143 0.01767627
-           15      1.0147500      0.3     9 0.03333333 0.03284881
-           16      1.2056047      0.9    44 0.02045455 0.01696621
-           17      1.2950000      1.3    45 0.02888889 0.02230802
-           18      1.0750000      0.2     9 0.02222222 0.02067183
+           12      1.1920952      0.5    21 0.02380952 0.01997284
+           13      1.2853053      2.1    95 0.02210526 0.01719845
+           14      1.1091429      1.3    70 0.01857143 0.01674395
+           15      1.1121111      0.3     9 0.03333333 0.02997302
+           16      1.2313409      0.9    44 0.02045455 0.01661160
+           17      1.3291778      1.3    45 0.02888889 0.02173441
+           18      1.2903333      0.2     9 0.02222222 0.01722208
            19      1.1270667      0.3    15 0.02000000 0.01774518
-           20      1.6725000      0.8    17 0.04705882 0.02813682
-           21      1.2966667      0.2     7 0.02857143 0.02203452
+           20      1.9064706      0.8    17 0.04705882 0.02468374
+           21      1.6171429      0.2     7 0.02857143 0.01766784
            22      1.5690476      0.4    21 0.01904762 0.01213961
            23      1.5104000      0.5    25 0.02000000 0.01324153</code></pre>
 </div>
